@@ -20,3 +20,7 @@ class AllSprites(pygame.sprite.Group):
         for sprite in sorted(object_sprites, key = lambda sprite: sprite.rect.centery):
             self.display_surface.blit(sprite.image, sprite.rect.topleft + self.offset)
 
+            if hasattr(sprite, 'hit_timer') and sprite.hit_timer > 0:
+                if pygame.time.get_ticks() - sprite.hit_timer < sprite.flash_duration:
+                    self.display_surface.blit(sprite.white_surf, sprite.rect.topleft + self.offset)
+

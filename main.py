@@ -75,7 +75,7 @@ class Game:
 
     def play_music(self, music_name):
         pygame.mixer.music.load(join('sounds', 'music', f'{music_name}.mp3'))
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.)
         pygame.mixer.music.play(loops=-1)
 
     def load_images(self):
@@ -210,11 +210,6 @@ class Game:
                 refill_zone.rect = pygame.Rect(marker.x, marker.y, marker.width, marker.height)
             elif marker.name == 'enemy': #the enemies
                 self.spawn_position.append((marker.x, marker.y))
-    
-    def bullet_collision(self):
-        if self.bullet_sprites:
-            for bullet in self.bullet_sprites:
-                collision_sprites = pygame.sprite.spritecollide(bullet, self.enemy_sprites, True)
 
     def spawn_enemy(self):
         pos = choice(self.spawn_position)
@@ -361,6 +356,24 @@ class Game:
             self.play_music('mm01')
             self.state = 'MENU'
 
+    def display_death_screen(self, event_list):
+        self.all_sprites.draw(self.player.rect.center)
+
+        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        overlay.set_alpha(150)
+        overlay.fill('black')
+        self.display_surface.blit(overlay, (0,0))
+
+        if self.create_button('RESTART', (WINDOW_HEIGHT / 2) - 40, event_list):
+            self.button_sound.play()
+            self.state = 'GAME'
+
+        if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 50, event_list):
+            self.reset_game()
+            self.button_sound.play()
+            self.play_music('mm01')
+            self.state = 'MENU'
+
     def run(self):
         while self.running:
             #dt
@@ -396,7 +409,6 @@ class Game:
                 self.wave_logic()
                 self.check_ammo_refill()
                 self.all_sprites.update(dt)
-                self.bullet_collision()
 
                 #draw
                 self.display_surface.fill('black')

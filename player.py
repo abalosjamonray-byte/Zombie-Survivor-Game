@@ -17,6 +17,9 @@ class Player(pygame.sprite.Sprite):
         self.speed = 50
         self.hp = 100
 
+        self.hit_timer = 0
+        self.flash_duration = 100
+
         #attack logic
         self.can_take_damage = True
         self.damage_timer = 0
@@ -81,6 +84,13 @@ class Player(pygame.sprite.Sprite):
             print("Player has died!")
             pygame.quit()
             exit()
+
+    def trigger_damage(self):
+        self.hit_timer = pygame.time.get_ticks()
+
+        mask = pygame.mask.from_surface(self.image)
+        self.white_surf = mask.to_surface(setcolor='dark red', unsetcolor=(0,0,0))
+        self.white_surf.set_colorkey((0,0,0))
 
     def update(self, dt):
         self.check_vulnerability()

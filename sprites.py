@@ -76,6 +76,7 @@ class Bat(pygame.sprite.Sprite):
                     if hasattr(enemy, 'health'):
                         #dealiong the damage
                         enemy.health -= self.damage
+                        enemy.trigger_damage()
                         self.entities_hit.append(enemy)
 
                         player_pos = pygame.Vector2(self.player.rect.center)
@@ -164,6 +165,7 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, self.enemy_sprites, False):
             for enemy in pygame.sprite.spritecollide(self, self.enemy_sprites, False):
                 enemy.health -= self.damage
+                enemy.trigger_damage()
             self.kill()
 
         #collision with walls
@@ -199,6 +201,9 @@ class Enemy(pygame.sprite.Sprite):
         self.knockback_vector = pygame.Vector2()
         self.knockback_friction = 0.9
 
+        self.hit_timer = 0
+        self.flash_duration = 100
+
         #stats
         self.speed = 50
         self.health = 10
@@ -210,6 +215,7 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.attack_frames[int(self.attack_frame_index) % len(self.attack_frames)]
             if self.player.can_take_damage:
                 self.player.hp -= self.damage
+                self.player.trigger_damage()
                 self.player.can_take_damage = False
                 self.player.damage_timer = pygame.time.get_ticks()
                 print(f"Player HP: {self.player.hp}")
@@ -250,6 +256,13 @@ class Enemy(pygame.sprite.Sprite):
             if hasattr(self, 'game'):
                 self.game.score += self.points
             self.kill()
+
+    def trigger_damage(self):
+        self.hit_timer = pygame.time.get_ticks()
+
+        mask = pygame.mask.from_surface(self.image)
+        self.white_surf = mask.to_surface(setcolor='dark red', unsetcolor=(0,0,0))
+        self.white_surf.set_colorkey((0,0,0))
 
     def update(self, dt):
         self.animate(dt)
