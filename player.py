@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 
         #stats
         self.speed = 50
-        self.hp = 100
+        self.hp = 10
 
         self.hit_timer = 0
         self.flash_duration = 100
@@ -81,9 +81,7 @@ class Player(pygame.sprite.Sprite):
 
     def check_death(self):
         if self.hp <= 0:
-            print("Player has died!")
-            pygame.quit()
-            exit()
+            self.kill()
 
     def trigger_damage(self):
         self.hit_timer = pygame.time.get_ticks()

@@ -66,6 +66,8 @@ class Game:
         self.title = 'Zombie Survivor'
         self.title_font = pygame.font.SysFont('Comic Sans MS', 20)
         self.menu_font = pygame.font.SysFont('Comic Sans MS', 10)
+        self.death_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.death_text = 'YOU DIED'
 
         #button sounds
         self.button_sound = pygame.mixer.Sound(join('sounds', 'button sounds', 'bs02.wav'))
@@ -364,11 +366,15 @@ class Game:
         overlay.fill('black')
         self.display_surface.blit(overlay, (0,0))
 
-        if self.create_button('RESTART', (WINDOW_HEIGHT / 2) - 40, event_list):
+        death_surf = self.death_font.render(self.death_text, False, 'white')
+        death_rect = death_surf.get_frect(center = (WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2) - 30))
+        self.display_surface.blit(death_surf, death_rect)
+
+        if self.create_button('RESTART', (WINDOW_HEIGHT / 2) + 0, event_list):
             self.button_sound.play()
             self.state = 'GAME'
 
-        if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 50, event_list):
+        if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 40, event_list):
             self.reset_game()
             self.button_sound.play()
             self.play_music('mm01')
@@ -401,6 +407,9 @@ class Game:
             elif self.state == 'PAUSE':
                 self.display_pause_screen(event_list)
 
+            elif self.state == 'DEATH':
+                self.display_death_screen(event_list)
+
             elif self.state == 'GAME':
                 #update
                 self.input()
@@ -409,6 +418,9 @@ class Game:
                 self.wave_logic()
                 self.check_ammo_refill()
                 self.all_sprites.update(dt)
+
+                if self.player.hp <= 0:
+                    self.state = 'DEATH'
 
                 #draw
                 self.display_surface.fill('black')

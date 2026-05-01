@@ -98,10 +98,15 @@ class Bat(pygame.sprite.Sprite):
         else:
             self.entities_hit.clear()
 
+    def check_player_death(self):
+        if self.player.hp <= 0:
+            self.kill()
+
     def update(self, _):
         self.get_direction()
         self.rotate_bat()
         self.check_velocity_hit()
+        self.check_player_death()
         self.rect = self.image.get_frect(center = self.player.rect.center + self.player_direction * self.distance)
 
 class Gun(pygame.sprite.Sprite):
@@ -136,10 +141,15 @@ class Gun(pygame.sprite.Sprite):
             self.image = pygame.transform.rotozoom(self.gun_surf, abs(angle), 1)
             self.image = pygame.transform.flip(self.image, False, True)
 
+    def check_player_death(self):
+            if self.player.hp <= 0:
+                self.kill()
+
 
     def update(self, _):
         self.get_direction()
         self.rotate_gun()
+        self.check_player_death()
         self.rect.center = self.player.rect.center + self.player_direction * self.distance
 
 class Bullet(pygame.sprite.Sprite):
