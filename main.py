@@ -44,9 +44,10 @@ class Game:
         self.last_refill_time = 0
         self.refill_cooldown = 2000
 
-        #gun sound effects
+        #sound effects
         self.reload_sound = pygame.mixer.Sound(join('sounds', 'ak47_reload.mp3'))
         self.shoot_sound = pygame.mixer.Sound(join('sounds', 'AK47', 'ak4704.wav'))
+        self.zombie_hit_sound = pygame.mixer.Sound(join('sounds', 'impact', 'hit zombie.mp3'))
 
         #enemy timer
         self.wave_manager = WaveManager()
@@ -64,10 +65,10 @@ class Game:
         self.state = 'MENU'
         self.play_music('mm01')
         self.title = 'Zombie Survivor'
+        self.death_text = 'YOU DIED'
         self.title_font = pygame.font.SysFont('Comic Sans MS', 20)
         self.menu_font = pygame.font.SysFont('Comic Sans MS', 10)
         self.death_font = pygame.font.SysFont('Comic Sans MS', 30)
-        self.death_text = 'YOU DIED'
 
         #button sounds
         self.button_sound = pygame.mixer.Sound(join('sounds', 'button sounds', 'bs02.wav'))
@@ -77,7 +78,7 @@ class Game:
 
     def play_music(self, music_name):
         pygame.mixer.music.load(join('sounds', 'music', f'{music_name}.mp3'))
-        pygame.mixer.music.set_volume(0.)
+        pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(loops=-1)
 
     def load_images(self):
@@ -367,11 +368,12 @@ class Game:
         self.display_surface.blit(overlay, (0,0))
 
         death_surf = self.death_font.render(self.death_text, False, 'white')
-        death_rect = death_surf.get_frect(center = (WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2) - 30))
+        death_rect = death_surf.get_frect(center = (WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2) - 40))
         self.display_surface.blit(death_surf, death_rect)
 
         if self.create_button('RESTART', (WINDOW_HEIGHT / 2) + 0, event_list):
             self.button_sound.play()
+            self.reset_game()
             self.state = 'GAME'
 
         if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 40, event_list):

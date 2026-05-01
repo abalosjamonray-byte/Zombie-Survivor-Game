@@ -31,6 +31,8 @@ class Bat(pygame.sprite.Sprite):
         #bat stats
         self.damage = 25
 
+        self.enemy_hit_sound = pygame.mixer.Sound(join('sounds', 'impact', 'bat hit.mp3'))
+
         #checks if it swings
         self.old_pos_center = pygame.Vector2(self.rect.center)
         self.swing_threshold = 5
@@ -76,6 +78,7 @@ class Bat(pygame.sprite.Sprite):
                     if hasattr(enemy, 'health'):
                         #dealiong the damage
                         enemy.health -= self.damage
+                        self.enemy_hit_sound.play()
                         enemy.trigger_damage()
                         self.entities_hit.append(enemy)
 
@@ -165,6 +168,8 @@ class Bullet(pygame.sprite.Sprite):
         self.speed = 500
         self.damage = 25
 
+        self.enemy_hit_sound = pygame.mixer.Sound(join('sounds', 'impact', 'hit zombie.mp3'))
+
         self.collision_sprites = collision_sprites
         self.enemy_sprites = enemy_sprites 
 
@@ -175,6 +180,7 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, self.enemy_sprites, False):
             for enemy in pygame.sprite.spritecollide(self, self.enemy_sprites, False):
                 enemy.health -= self.damage
+                self.enemy_hit_sound.play()
                 enemy.trigger_damage()
             self.kill()
 
