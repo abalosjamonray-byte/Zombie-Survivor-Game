@@ -69,6 +69,8 @@ class Game:
         self.title_font = pygame.font.SysFont('Comic Sans MS', 20)
         self.menu_font = pygame.font.SysFont('Comic Sans MS', 10)
         self.death_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.how_to_play_action_font = pygame.font.SysFont('Comic Sans MS', 9)
+        self.how_to_play_text_font = pygame.font.SysFont('Comic Sans MS', 8)
 
         #button sounds
         self.button_sound = pygame.mixer.Sound(join('sounds', 'button sounds', 'bs02.wav'))
@@ -321,6 +323,65 @@ class Game:
         self.wave_manager.current_wave = 0
         self.wave_manager.start_next_wave()
 
+    def display_how_to_play(self, event_list):
+        self.all_sprites.draw(self.player.rect.center)
+        
+        overlay = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        overlay.set_alpha(190) 
+        overlay.fill('black')
+        self.display_surface.blit(overlay, (0,0))
+
+        #title of the screen
+        title_surf = self.title_font.render('How to Play', False, 'white')
+        title_rect = title_surf.get_frect(center = (WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2) - 75))
+        self.display_surface.blit(title_surf, title_rect)
+
+        #the action 
+        text_surf = self.how_to_play_action_font.render('Switching Weapons', False, 'white')
+        text_rect = text_surf.get_frect(center = ((WINDOW_WIDTH / 2) - 95, (WINDOW_HEIGHT / 2) - 50))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_action_font.render('Reloading', False, 'white')
+        text_rect = text_surf.get_frect(center = ((WINDOW_WIDTH / 2) - 112, (WINDOW_HEIGHT / 2) - 25))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_action_font.render('Refilling Ammo', False, 'white')
+        text_rect = text_surf.get_frect(center = ((WINDOW_WIDTH / 2) - 102, (WINDOW_HEIGHT / 2) + 0))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_action_font.render('Aiming with the Gun', False, 'white')
+        text_rect = text_surf.get_frect(center = ((WINDOW_WIDTH / 2) - 95, (WINDOW_HEIGHT / 2) + 25))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_action_font.render('Hiting with the bat', False, 'white')
+        text_rect = text_surf.get_frect(center = ((WINDOW_WIDTH / 2) - 95, (WINDOW_HEIGHT / 2) + 50))
+        self.display_surface.blit(text_surf, text_rect)
+
+        #description
+        text_surf = self.how_to_play_text_font.render('to switch, click either one for the gun, or two for the bat.', False, 'white')
+        text_rect = text_surf.get_frect(topleft = ((WINDOW_WIDTH / 2) - 120, (WINDOW_HEIGHT / 2) - 45))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_text_font.render('to reload, simply press r.', False, 'white')
+        text_rect = text_surf.get_frect(topleft = ((WINDOW_WIDTH / 2) - 120, (WINDOW_HEIGHT / 2) - 20))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_text_font.render('to refil, look for a green ammo refill box then press e.', False, 'white')
+        text_rect = text_surf.get_frect(topleft = ((WINDOW_WIDTH / 2) - 120, (WINDOW_HEIGHT / 2) + 5))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_text_font.render('your gun direction follows the mouse cursor, so aim with the cursor.', False, 'white')
+        text_rect = text_surf.get_frect(topleft = ((WINDOW_WIDTH / 2) - 120, (WINDOW_HEIGHT / 2) + 30))
+        self.display_surface.blit(text_surf, text_rect)
+
+        text_surf = self.how_to_play_text_font.render('swing with the mouse cursor as the bat follows the mouse cursor as well.', False, 'white')
+        text_rect = text_surf.get_frect(topleft = ((WINDOW_WIDTH / 2) - 120, (WINDOW_HEIGHT / 2) + 55))
+        self.display_surface.blit(text_surf, text_rect)
+        
+        if self.create_button('BACK', (WINDOW_HEIGHT / 2) + 70, event_list):
+            self.button_sound.play()
+            self.state = 'MENU'
+
     def display_menu(self, event_list):
         self.all_sprites.draw(self.player.rect.center)
         
@@ -339,8 +400,9 @@ class Game:
             self.play_music('mm03')
             self.state = 'GAME'
 
-        if self.create_button('Credits', (WINDOW_HEIGHT / 2) + 5, event_list):
+        if self.create_button('HOW TO PLAY', (WINDOW_HEIGHT / 2) + 5, event_list):
             self.button_sound.play()
+            self.state = 'TUTORIAL'
 
         if self.create_button('QUIT', (WINDOW_HEIGHT / 2) + 50, event_list):
             self.button_sound.play()
@@ -386,6 +448,7 @@ class Game:
         if self.create_button('RESTART', (WINDOW_HEIGHT / 2) + 0, event_list):
             self.button_sound.play()
             self.reset_game()
+            self.play_music('mm03')
             self.state = 'GAME'
 
         if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 40, event_list):
@@ -418,10 +481,14 @@ class Game:
             if self.state == 'MENU':
                 self.display_menu(event_list)
 
+            elif self.state == 'TUTORIAL':
+                self.display_how_to_play(event_list)
+
             elif self.state == 'PAUSE':
                 self.display_pause_screen(event_list)
 
             elif self.state == 'DEATH':
+                pygame.mixer.music.stop()
                 self.display_death_screen(event_list)
 
             elif self.state == 'GAME':
