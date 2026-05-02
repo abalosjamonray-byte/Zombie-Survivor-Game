@@ -275,7 +275,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hit_timer = pygame.time.get_ticks()
 
         mask = pygame.mask.from_surface(self.image)
-        self.white_surf = mask.to_surface(setcolor='white', unsetcolor=(0,0,0))
+        self.white_surf = mask.to_surface(setcolor='light grey', unsetcolor=(0,0,0))
         self.white_surf.set_colorkey((0,0,0))
 
     def update(self, dt):

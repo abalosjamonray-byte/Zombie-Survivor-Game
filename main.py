@@ -55,7 +55,7 @@ class Game:
         self.spawn_position = []
 
         #waves
-        self.wave_text = pygame.font.SysFont('Arial', 10)
+        self.wave_text = pygame.font.SysFont('Arial', 8)
         self.wave_finished_text = pygame.font.SysFont('Trebuchet MS', 25)
 
         #player score
@@ -78,7 +78,7 @@ class Game:
 
     def play_music(self, music_name):
         pygame.mixer.music.load(join('sounds', 'music', f'{music_name}.mp3'))
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.2)
         pygame.mixer.music.play(loops=-1)
 
     def load_images(self):
@@ -93,7 +93,7 @@ class Game:
         self.btn_idle_surf = pygame.image.load(join('images', 'buttons', 'idle.png')).convert_alpha()
         self.btn_hover_surf = pygame.image.load(join('images', 'buttons', 'hover.png')).convert_alpha()
 
-        self.bullet_surf = pygame.image.load(join('images', 'weapon', 'bullet', 'bullet.png')).convert_alpha()
+        self.bullet_surf = pygame.image.load(join('images', 'weapon', 'bullet', 'b01.png')).convert_alpha()
 
         folders = list(walk(join('images', 'enemies')))[0][1]
         self.enemy_frames = {}
@@ -251,13 +251,23 @@ class Game:
 
         self.display_surface.blit(wave_surf, (10, 10))
 
+        #enemies left
+        enemies_still_to_spawn = self.wave_manager.enemies_to_spawn - self.wave_manager.spawned_this_wave
+        enemies_alive = len(self.enemy_sprites)
+        total_remaining = enemies_still_to_spawn + enemies_alive
+
+        rem_surf = self.wave_text.render(f'Zombies Left: {total_remaining}', False, 'orange')
+        rem_rect = rem_surf.get_rect(center = (WINDOW_WIDTH / 2, 10))
+        
+        self.display_surface.blit(rem_surf, rem_rect)
+
         #displaying current ammo and ammo reserve
         ammo_color = 'red' if self.magazine <= 5 else 'black'
         ammo_surf = self.wave_text.render(f'Ammo: {self.magazine} / {self.ammo_reserve}', False, ammo_color)
         self.display_surface.blit(ammo_surf, (10, 30))
 
         #displaying score
-        score_surf = self.wave_text.render(f'Score: {self.score}', False, (0, 255, 100))
+        score_surf = self.wave_text.render(f'Score: {self.score}', False, 'black')
         score_rect = score_surf.get_rect(topright = (WINDOW_WIDTH - 20, 20))
         self.display_surface.blit(score_surf, score_rect)
 
