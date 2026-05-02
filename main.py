@@ -63,7 +63,7 @@ class Game:
 
         #game state
         self.state = 'MENU'
-        self.play_music('mm01')
+        self.play_music('mm02')
         self.title = 'Zombie Survivor'
         self.death_text = 'YOU DIED'
         self.title_font = pygame.font.SysFont('Comic Sans MS', 20)
@@ -168,7 +168,6 @@ class Game:
                     self.ammo_reserve = 0
             
                 self.is_reloading = False
-            print(f'Reloaded! Mag: {self.magazine} | Reserve: {self.ammo_reserve}')
 
     def check_ammo_refill(self):
         keys = pygame.key.get_pressed()
@@ -327,6 +326,7 @@ class Game:
         if self.create_button('START GAME', (WINDOW_HEIGHT / 2) - 40, event_list):
             self.reset_game()
             self.button_sound.play()
+            self.play_music('mm03')
             self.state = 'GAME'
 
         if self.create_button('Credits', (WINDOW_HEIGHT / 2) + 5, event_list):
@@ -346,17 +346,19 @@ class Game:
 
         if self.create_button('RESUME', (WINDOW_HEIGHT / 2) - 40, event_list):
             self.button_sound.play()
+            pygame.mixer.music.unpause()
             self.state = 'GAME'
 
         if self.create_button('RESTART', (WINDOW_HEIGHT / 2) + 5, event_list):
             self.reset_game()
             self.button_sound.play()
+            self.play_music('mm03')
             self.state = 'GAME'
 
         if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 50, event_list):
             self.reset_game()
             self.button_sound.play()
-            self.play_music('mm01')
+            self.play_music('mm02')
             self.state = 'MENU'
 
     def display_death_screen(self, event_list):
@@ -379,7 +381,7 @@ class Game:
         if self.create_button('MAIN MENU', (WINDOW_HEIGHT / 2) + 40, event_list):
             self.reset_game()
             self.button_sound.play()
-            self.play_music('mm01')
+            self.play_music('mm02')
             self.state = 'MENU'
 
     def run(self):

@@ -95,7 +95,6 @@ class Bat(pygame.sprite.Sprite):
 
                         if enemy.health <= 0:
                                 enemy.kill
-                    print(f"Enemy HP: {enemy.health}")
 
         #removes the enemies inside the hit list if the bat stopped swinging
         else:
@@ -234,7 +233,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.player.trigger_damage()
                 self.player.can_take_damage = False
                 self.player.damage_timer = pygame.time.get_ticks()
-                print(f"Player HP: {self.player.hp}")
 
     def animate(self, dt):
         self.frame_index += self.animation_speed * dt
@@ -277,7 +275,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hit_timer = pygame.time.get_ticks()
 
         mask = pygame.mask.from_surface(self.image)
-        self.white_surf = mask.to_surface(setcolor='dark red', unsetcolor=(0,0,0))
+        self.white_surf = mask.to_surface(setcolor='white', unsetcolor=(0,0,0))
         self.white_surf.set_colorkey((0,0,0))
 
     def update(self, dt):
